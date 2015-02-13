@@ -166,13 +166,13 @@ class LaserTracker(object):
 
         # create output windows
         #self.create_and_position_window('LaserPointer', 0, 0)
-        self.create_and_position_window('RGB_VideoFrame',
-            10 + self.cam_width, 0)
-        if self.display_thresholds:
-            self.create_and_position_window('Thresholded_HSV_Image', 10, 10)
-            self.create_and_position_window('Hue', 20, 20)
-            self.create_and_position_window('Saturation', 30, 30)
-            self.create_and_position_window('Value', 40, 40)
+        #self.create_and_position_window('RGB_VideoFrame',
+        #    10 + self.cam_width, 0)
+        #if self.display_thresholds:
+        #    self.create_and_position_window('Thresholded_HSV_Image', 10, 10)
+        #    self.create_and_position_window('Hue', 20, 20)
+        #    self.create_and_position_window('Saturation', 30, 30)
+        #    self.create_and_position_window('Value', 40, 40)
 
         # Set up the camer captures
         self.setup_camera_capture()
@@ -197,7 +197,7 @@ class LaserTracker(object):
 
             #sys.stdout.write("(" + str(blobx) + "," + str(bloby) + ")" + "\n")
             #ser.write(str(blobx) + "," + str(bloby) + ",")
-            self.display(frame)
+            #self.display(frame)
 
 
             self.handle_quit()
