@@ -6,7 +6,7 @@ import sys
 import numpy as np
 import serial
 
-ser = serial.Serial('COM16', 115200, timeout=1)
+#ser = serial.Serial('COM16', 115200, timeout=1)
 
 
 class LaserTracker(object):
@@ -100,13 +100,24 @@ class LaserTracker(object):
     def detect(self, frame):
         hsv_img = cv2.cvtColor(frame, cv.CV_BGR2HSV)
 
-        BLOB_MIN = np.array([0, 0, 230],np.uint8)
-        BLOB_MAX = np.array([8, 115, 255],np.uint8)
+        BLOB_MIN = np.array([25, 100, 150],np.uint8)
+        BLOB_MAX = np.array([35, 175, 200],np.uint8)
 
         frame_threshed = cv2.inRange(hsv_img, BLOB_MIN, BLOB_MAX)
 
+        contours,hierarchy = cv2.findContours(frame_threshed,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
+        max_area = 0
+        for cnt in contours:
+            area = cv2.contourArea(cnt)
+            if area > max_area:
+                max_area = area
+                best_cnt = cnt
+
+        M = cv2.moments(best_cnt)
+        blobx,bloby = int(M['m10']/M['m00']), int(M['m01']/M['m00'])
+
         #cv.InRangeS(hsv_img,cv.Scalar(5, 50, 50),cv.Scalar(15, 255, 255),frame_threshed)    # Select a range of yellow color
-        src = cv.fromarray(frame_threshed)
+        """src = cv.fromarray(frame_threshed)
         #rect = cv.BoundingRect(frame_threshed, update=0)
 
         leftmost=0
@@ -132,7 +143,7 @@ class LaserTracker(object):
                     temp=2
 
         blobx=cv.Round((rightmost+leftmost)/2)
-        bloby=cv.Round((bottommost+topmost)/2)
+        bloby=cv.Round((bottommost+topmost)/2)"""
         #return (leftmost,rightmost,topmost,bottommost)
 
 
@@ -173,15 +184,18 @@ class LaserTracker(object):
                 # no image captured... end the processing
                 sys.stderr.write("Could not read camera frame. Quitting\n")
                 sys.exit(1)
+            
 
             (blobx, bloby) = self.detect(frame)
 
             if blobx > 320:
-                ser.write("2" + ",")
+                #ser.write("2" + ",")
+                sys.stdout.write("2" + "\n")
             else if blobx < 320:
-                ser.write("1" + ",")
+                #ser.write("1" + ",")
+                sys.stdout.write("1" + "\n")
 
-            sys.stdout.write("(" + str(blobx) + "," + str(bloby) + ")" + "\n")
+            #sys.stdout.write("(" + str(blobx) + "," + str(bloby) + ")" + "\n")
             #ser.write(str(blobx) + "," + str(bloby) + ",")
             self.display(frame)
 
