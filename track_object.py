@@ -191,7 +191,7 @@ class LaserTracker(object):
             if blobx > 320:
                 #ser.write("2" + ",")
                 sys.stdout.write("2" + "\n")
-            else if blobx < 320:
+            if blobx < 320:
                 #ser.write("1" + ",")
                 sys.stdout.write("1" + "\n")
 
